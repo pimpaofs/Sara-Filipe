@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sara & Filipe - Nosso Espaço Privado</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FullCalendar -->
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Google API -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400;700&display=swap');
+        
+        :root {
+            --primary-rose: #e8b4b8;
+            --primary-beige: #f5e6d3;
+            --accent-gold: #d4a574;
+            --text-dark: #4a4a4a;
+            --soft-pink: #fce4ec;
+        }
+        
+        body {
+            font-family: 'Lato', sans-serif;
+            background: linear-gradient(135deg, #faf0e6 0%, #f5e6d3 50%, #fce4ec 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+        
+        h1, h2, h3, .romantic-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(232, 180, 184, 0.2);
+        }
+        
+        .btn-romantic {
+            background: linear-gradient(135deg, #e8b4b8 0%, #d4a574 100%);
+            color: white;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .btn-romantic:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(232, 180, 184, 0.4);
+        }
+        
+        .activity-intimo { background-color: #ff6b9d !important; border-color: #ff6b9d !important; }
+        .activity-encontro { background-color: #ffd93d !important; border-color: #ffd93d !important; color: #333 !important; }
+        .activity-qualidade { background-color: #6bcf7f !important; border-color: #6bcf7f !important; }
+        .activity-exercicio { background-color: #4ecdc4 !important; border-color: #4ecdc4 !important; }
+        .activity-massagem { background-color: #a8e6cf !important; border-color: #a8e6cf !important; }
+        .activity-conversa { background-color: #c7ceea !important; border-color: #c7ceea !important; }
+        .activity-jogo { background-color: #ff8b94 !important; border-color: #ff8b94 !important; }
+        .activity-outro { background-color: #b4a7d6 !important; border-color: #b4a7d6 !important; }
+        
+        .hidden-section { display: none; }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .heart-beat {
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e8b4b8;
+            border-radius: 4px;
+        }
+        
+        .fc-event {
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 0.85em;
+        }
+        
+        .stats-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .privacy-banner {
+            background: linear-gradient(90deg, #ff6b9d 0%, #e8b4b8 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body class="fade-in">
+
+    <!-- Header -->
+    <header class="glass-panel sticky top-0 z-50 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl heart-beat">💕</span>
+                <div>
+                    <h1 class="text-2xl font-semibold romantic-font text-gray-800">Sara & Filipe</h1>
+                    <p class="text-xs text-gray-600">Nosso diário privado de amor</p>
+                </div>
+            </div>
+            
+            <nav class="flex gap-2 overflow-x-auto pb-2 md:pb-0">
+                <button onclick="showSection('calendar')" class="nav-btn px-4 py-2 rounded-full bg-pink-100 hover:bg-pink-200 transition text-sm font-medium text-gray-700 whitespace-nowrap">
+                    📅 Calendário
+                </button>
+                <button onclick="showSection('history')" class="nav-btn px-4 py-2 rounded-full bg-pink-100 hover:bg-pink-200 transition text-sm font-medium text-gray-700 whitespace-nowrap">
+                    📋 Histórico
+                </button>
+                <button onclick="showSection('stats')" class="nav-btn px-4 py-2 rounded-full bg-pink-100 hover:bg-pink-200 transition text-sm font-medium text-gray-700 whitespace-nowrap">
+                    📊 Estatísticas
+                </button>
+                <button onclick="showSection('settings')" class="nav-btn px-4 py-2 rounded-full bg-pink-100 hover:bg-pink-200 transition text-sm font-medium text-gray-700 whitespace-nowrap">
+                    ⚙️ Configurações
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Privacy Notice Banner -->
+    <div class="max-w-7xl mx-auto px-4 mt-4">
+        <div class="privacy-banner rounded-xl p-3 flex items-center justify-between text-sm shadow-lg">
+            <div class="flex items-center gap-2">
+                <span class="text-xl">🔒</span>
+                <span><strong>Site 100% Privado:</strong> Dados armazenados apenas neste dispositivo. Nenhuma informação enviada para servidores externos (exceto Google Calendar se ativado).</span>
+            </div>
+            <button onclick="this.parentElement.style.display='none'" class="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-1 px-2 transition">
+                ✕
+            </button>
+        </div>
+    </div>
+
+    <!-- Google Auth Status -->
+    <div class="max-w-7xl mx-auto px-4 mt-4">
+        <div id="googleAuthBanner" class="glass-panel rounded-xl p-4 flex flex-wrap items-center justify-between gap-4 hidden">
+            <div class="flex items-center gap-3">
+                <img src="https://www.google.com/favicon.ico" class="w-6 h-6">
+                <div>
+                    <p class="font-medium text-sm">Sincronização Google Calendar</p>
+                    <p id="googleStatus" class="text-xs text-gray-600">Não conectado</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button id="authorizeBtn" onclick="handleAuthClick()" class="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600 transition">
+                    Conectar Google
+                </button>
+                <button id="signoutBtn" onclick="handleSignoutClick()" class="px-4 py-2 bg-gray-500 text-white rounded-lg text-sm hover:bg-gray-600 transition hidden">
+                    Desconectar
+                </button>
+                <button onclick="syncToGoogle()" class="px-4 py-2 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600 transition">
+                    🔄 Sync Agora
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CALENDAR SECTION -->
+    <section id="calendarSection" class="max-w-7xl mx-auto px-4 py-6">
+        <div class="glass-panel rounded-2xl p-6">
+            <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
+                <h2 class="text-2xl romantic-font">Nosso Calendário</h2>
+                <button onclick="openAddEventModal()" class="btn-romantic px-6 py-2 rounded-full text-sm font-medium">
+                    + Adicionar Momento Especial
+                </button>
+            </div>
+            <div id="calendar" class="min-h-[500px]"></div>
+        </div>
+    </section>
+
+    <!-- HISTORY SECTION -->
+    <section id="historySection" class="max-w-7xl mx-auto px-4 py-6 hidden-section">
+        <div class="glass-panel rounded-2xl p-6">
+            <h2 class="text-2xl romantic-font mb-4">Histórico de Momentos</h2>
+            
+            <!-- Filters -->
+            <div class="flex flex-wrap gap-3 mb-4">
+                <select id="filterType" onchange="renderHistory()" class="px-4 py-2 rounded-lg border border-pink-200 bg-white">
+                    <option value="">Todos os tipos</option>
+                    <option value="intimo">Momento íntimo</option>
+                    <option value="encontro">Encontro romântico</option>
+                    <option value="qualidade">Tempo de qualidade</option>
+                    <option value="exercicio">Exercício em conjunto</option>
+                    <option value="massagem">Massagem mútua</option>
+                    <option value="conversa">Conversa profunda</option>
+                    <option value="jogo">Jogo erótico</option>
+                    <option value="outro">Outro</option>
+                </select>
+                <select id="filterStatus" onchange="renderHistory()" class="px-4 py-2 rounded-lg border border-pink-200 bg-white">
+                    <option value="">Todos os estados</option>
+                    <option value="completed">Concluídos</option>
+                    <option value="pending">Pendentes</option>
+                </select>
+                <input type="date" id="filterDate" onchange="renderHistory()" class="px-4 py-2 rounded-lg border border-pink-200 bg-white">
+                <button onclick="clearFilters()" class="px-4 py-2 text-pink-600 hover:bg-pink-50 rounded-lg transition text-sm">
+                    Limpar Filtros
+                </button>
+            </div>
+            
+            <div id="historyList" class="space-y-3 max-h-[600px] overflow-y-auto">
+                <!-- Items will be rendered here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS SECTION -->
+    <section id="statsSection" class="max-w-7xl mx-auto px-4 py-6 hidden-section">
+        <div class="glass-panel rounded-2xl p-6">
+            <div class="flex justify-between items-center mb-6 flex-wrap gap-3">
+                <h2 class="text-2xl romantic-font">Nossas Estatísticas de Amor</h2>
+                <div class="flex gap-2">
+                    <button onclick="exportStats('csv')" class="px-4 py-2 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600 transition">
+                        📥 CSV
+                    </button>
+                    <button onclick="exportStats('pdf')" class="px-4 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600 transition">
+                        📄 PDF
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="stats-card text-center">
+                    <p class="text-3xl font-bold text-pink-600" id="statTotal">0</p>
+                    <p class="text-sm text-gray-600">Total de Atividades</p>
+                </div>
+                <div class="stats-card text-center">
+                    <p class="text-3xl font-bold text-green-600" id="statCompleted">0%</p>
+                    <p class="text-sm text-gray-600">Taxa de Conclusão</p>
+                </div>
+                <div class="stats-card text-center">
+                    <p class="text-3xl font-bold text-blue-600" id="statThisMonth">0</p>
+                    <p class="text-sm text-gray-600">Este Mês</p>
+                </div>
+                <div class="stats-card text-center">
+                    <p class="text-3xl font-bold text-purple-600" id="statTime">0h</p>
+                    <p class="text-sm text-gray-600">Tempo Investido</p>
+                </div>
+            </div>
+            
+            <!-- Charts -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="stats-card">
+                    <h3 class="font-semibold mb-4 text-center">Distribuição por Tipo</h3>
+                    <canvas id="pieChart"></canvas>
+                </div>
+                <div class="stats-card">
+                    <h3 class="font-semibold mb-4 text-center">Frequência Mensal</h3>
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SETTINGS SECTION -->
+    <section id="settingsSection" class="max-w-7xl mx-auto px-4 py-6 hidden-section">
+        <div class="glass-panel rounded-2xl p-6 max-w-2xl mx-auto">
+            <h2 class="text-2xl romantic-font mb-6">Configurações</h2>
+            
+            <div class="space-y-6">
+                <div class="bg-pink-50 rounded-xl p-4 border border-pink-200">
+                    <h3 class="font-semibold mb-2 text-pink-800">🔐 Privacidade & Segurança</h3>
+                    <p class="text-sm text-gray-600 mb-3">
+                        Este site não requer login porque funciona 100% no seu dispositivo. Os dados nunca saem daqui, exceto se ativar a sincronização com Google Calendar.
+                    </p>
+                    <div class="flex items-center gap-2 text-sm text-gray-500">
+                        <span>✓</span>
+                        <span>Dados em localStorage (apenas neste browser)</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-500">
+                        <span>✓</span>
+                        <span>Sem servidor backend</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-500">
+                        <span>✓</span>
+                        <span>Sem cookies de tracking</span>
+                    </div>
+                </div>
+                
+                <div class="border-b border-pink-200 pb-4">
+                    <h3 class="font-semibold mb-2">☁️ Google Calendar</h3>
+                    <p class="text-sm text-gray-600 mb-3">
+                        Para sincronizar com o Google Calendar (pimpaofs@gmail.com):
+                    </p>
+                    <ol class="text-sm text-gray-600 list-decimal list-inside space-y-1 mb-3">
+                        <li>Aceda ao <a href="https://console.cloud.google.com/" target="_blank" class="text-blue-600 underline">Google Cloud Console</a></li>
+                        <li>Crie um projeto e ative a Google Calendar API</li>
+                        <li>Crie credenciais OAuth 2.0 para aplicação Web</li>
+                        <li>Adicione <code>http://localhost:8000</code> (ou o seu domínio) aos URIs autorizados</li>
+                        <li>Copie o Client ID e API Key abaixo:</li>
+                    </ol>
+                    <div class="space-y-2">
+                        <input type="text" id="clientIdInput" placeholder="Client ID do Google" class="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm">
+                        <input type="text" id="apiKeyInput" placeholder="API Key do Google" class="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm">
+                        <button onclick="saveGoogleConfig()" class="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600 transition">
+                            Guardar Configuração
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="border-b border-pink-200 pb-4">
+                    <h3 class="font-semibold mb-2">🔔 Notificações</h3>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="notificationsEnabled" onchange="toggleNotifications()" class="w-4 h-4">
+                        <span class="text-sm">Ativar notificações do navegador para lembretes de atividades</span>
+                    </label>
+                </div>
+
+                <div class="border-b border-pink-200 pb-4">
+                    <h3 class="font-semibold mb-2">💾 Backup</h3>
+                    <div class="flex gap-2">
+                        <button onclick="exportBackup()" class="px-4 py-2 bg-blue-100 text-blue-600 rounded-lg text-sm hover:bg-blue-200 transition">
+                            Exportar Backup
+                        </button>
+                        <label class="px-4 py-2 bg-green-100 text-green-600 rounded-lg text-sm hover:bg-green-200 transition cursor-pointer">
+                            Importar Backup
+                            <input type="file" id="backupFile" accept=".json" onchange="importBackup(this)" class="hidden">
+                        </label>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-2 text-red-600">⚠️ Zona de Perigo</h3>
+                    <button onclick="clearAllData()" class="px-4 py-2 bg-red-100 text-red-600 hover:bg-red-200 rounded-lg transition text-sm">
+                        Apagar Todos os Dados Locais
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ADD/EDIT EVENT MODAL -->
+    <div id="eventModal" class="fixed inset-0 bg-black bg-opacity-50 z-[100] hidden flex items-center justify-center p-4">
+        <div class="glass-panel rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <h3 id="modalTitle" class="text-xl romantic-font mb-4">Novo Momento Especial</h3>
+            
+            <form id="eventForm" onsubmit="saveEvent(event)" class="space-y-4">
+                <input type="hidden" id="eventId">
+                
+                <div>
+                    <label class="block text-sm font-medium mb-1">Tipo de Atividade</label>
+                    <select id="eventType" required class="w-full px-3 py-2 rounded-lg border border-pink-200 focus:border-pink-400 focus:outline-none">
+                        <option value="intimo">💕 Momento íntimo</option>
+                        <option value="encontro">🌹 Encontro romântico</option>
+                        <option value="qualidade">⏰ Tempo de qualidade</option>
+                        <option value="exercicio">🏃 Exercício em conjunto</option>
+                        <option value="massagem">💆 Massagem mútua</option>
+                        <option value="conversa">💭 Conversa profunda</option>
+                        <option value="jogo">🎲 Jogo erótico</option>
+                        <option value="outro">✨ Outro (especificar)</option>
+                    </select>
+                </div>
+                
+                <div id="customTypeContainer" class="hidden">
+                    <label class="block text-sm font-medium mb-1">Especificar tipo</label>
+                    <input type="text" id="customType" class="w-full px-3 py-2 rounded-lg border border-pink-200 focus:border-pink-400 focus:outline-none">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-1">Data e Hora</label>
+                    <input type="datetime-local" id="eventDate" required class="w-full px-3 py-2 rounded-lg border border-pink-200 focus:border-pink-400 focus:outline-none">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-1">Duração (minutos)</label>
+                    <input type="number" id="eventDuration" min="5" value="60" class="w-full px-3 py-2 rounded-lg border border-pink-200 focus:border-pink-400 focus:outline-none">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-1">Descrição Privada</label>
+                    <textarea id="eventDescription" rows="3" placeholder="Detalhes especiais entre nós..." class="w-full px-3 py-2 rounded-lg border border-pink-200 focus:border-pink-400 focus:outline-none resize-none"></textarea>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="eventCompleted" class="w-4 h-4">
+                    <label for="eventCompleted" class="text-sm">Já foi realizado</label>
+                </div>
+                
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="closeModal()" class="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="flex-1 btn-romantic py-2 rounded-lg font-medium">
+                        Guardar
+                    </button>
+                </div>
+                
+                <button type="button" id="deleteBtn" onclick="deleteCurrentEvent()" class="w-full px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition hidden">
+                    🗑️ Eliminar
+                </button>
+                
+                <button type="button" id="completeBtn" onclick="markAsCompleted()" class="w-full px-4 py-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition hidden">
+                    ✅ Marcar como Concluído
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // CONFIGURAÇÃO E ESTADO GLOBAL
+        // ==========================================
+        
+        const CONFIG = {
+            STORAGE_KEY: 'sara_filipe_data_v1',
+            GOOGLE_CONFIG_KEY: 'sara_filipe_google_config',
+            ACTIVITY_TYPES: {
+                'intimo': { label: 'Momento íntimo', color: '#ff6b9d', icon: '💕' },
+                'encontro': { label: 'Encontro romântico', color: '#ffd93d', icon: '🌹' },
+                'qualidade': { label: 'Tempo de qualidade', color: '#6bcf7f', icon: '⏰' },
+                'exercicio': { label: 'Exercício em conjunto', color: '#4ecdc4', icon: '🏃' },
+                'massagem': { label: 'Massagem mútua', color: '#a8e6cf', icon: '💆' },
+                'conversa': { label: 'Conversa profunda', color: '#c7ceea', icon: '💭' },
+                'jogo': { label: 'Jogo erótico', color: '#ff8b94', icon: '🎲' },
+                'outro': { label: 'Outro', color: '#b4a7d6', icon: '✨' }
+            }
+        };
+
+        let appState = {
+            events: [],
+            googleAuthorized: false,
+            calendar: null,
+            charts: {}
+        };
+
+        // Google API variables
+        let gapiInited = false;
+        let gisInited = false;
+        let tokenClient;
+
+        // ==========================================
+        // INICIALIZAÇÃO
+        // ==========================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            initGoogleAPI();
+            initCalendar();
+            showSection('calendar');
+            
+            // Monitorar mudanças no tipo de atividade
+            document.getElementById('eventType').addEventListener('change', (e) => {
+                const customContainer = document.getElementById('customTypeContainer');
+                customContainer.classList.toggle('hidden', e.target.value !== 'outro');
+            });
+
+            // Mostrar banner Google se configurado
+            const googleConfig = localStorage.getItem(CONFIG.GOOGLE_CONFIG_KEY);
+            if (googleConfig) {
+                document.getElementById('googleAuthBanner').classList.remove('hidden');
+            }
+        });
+
+        // ==========================================
+        // PERSISTÊNCIA DE DADOS (localStorage)
+        // ==========================================
+
+        function loadData() {
+            const stored = localStorage.getItem(CONFIG.STORAGE_KEY);
+            if (stored) {
+                appState.events = JSON.parse(stored);
+            }
+            
+            const googleConfig = localStorage.getItem(CONFIG.GOOGLE_CONFIG_KEY);
+            if (googleConfig) {
+                const config = JSON.parse(googleConfig);
+                document.getElementById('clientIdInput').value = config.clientId || '';
+                document.getElementById('apiKeyInput').value = config.apiKey || '';
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(appState.events));
+        }
+
+        function generateId() {
+            return 'evt_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // ==========================================
+        // NAVEGAÇÃO ENTRE SECÇÕES
+        // ==========================================
+
+        function showSection(section) {
+            // Hide all sections
+            ['calendar', 'history', 'stats', 'settings'].forEach(s => {
+                document.getElementById(s + 'Section').classList.add('hidden-section');
+            });
+            
+            // Show selected
+            document.getElementById(section + 'Section').classList.remove('hidden-section');
+            
+            // Refresh content
+            if (section === 'calendar' && appState.calendar) {
+                appState.calendar.refetchEvents();
+            } else if (section === 'history') {
+                renderHistory();
+            } else if (section === 'stats') {
+                renderStats();
+            }
+        }
+
+        // ==========================================
+        // CALENDÁRIO (FullCalendar)
+        // ==========================================
+
+        function initCalendar() {
+            const calendarEl = document.getElementById('calendar');
+            
+            appState.calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                locale: 'pt',
+                events: getCalendarEvents,
+                eventClick: (info) => openEditModal(info.event.id),
+                dateClick: (info) => openAddEventModal(info.date),
+                eventClassNames: (arg) => ['activity-' + arg.event.extendedProps.type],
+                height: 'auto'
+            });
+            
+            appState.calendar.render();
+        }
+
+        function getCalendarEvents(info, successCallback, failureCallback) {
+            const events = appState.events.map(evt => ({
+                id: evt.id,
+                title: CONFIG.ACTIVITY_TYPES[evt.type].icon + ' ' + (evt.customType || CONFIG.ACTIVITY_TYPES[evt.type].label),
+                start: evt.date,
+                end: new Date(new Date(evt.date).getTime() + evt.duration * 60000).toISOString(),
+                extendedProps: {
+                    type: evt.type,
+                    description: evt.description,
+                    completed: evt.completed,
+                    customType: evt.customType
+                },
+                backgroundColor: CONFIG.ACTIVITY_TYPES[evt.type].color,
+                borderColor: CONFIG.ACTIVITY_TYPES[evt.type].color
+            }));
+            
+            successCallback(events);
+        }
+
+        // ==========================================
+        // GESTÃO DE EVENTOS
+        // ==========================================
+
+        function openAddEventModal(date = new Date()) {
+            document.getElementById('eventForm').reset();
+            document.getElementById('eventId').value = '';
+            document.getElementById('modalTitle').textContent = 'Novo Momento Especial';
+            document.getElementById('deleteBtn').classList.add('hidden');
+            document.getElementById('completeBtn').classList.add('hidden');
+            
+            // Set default date
+            const localDate = new Date(date);
+            localDate.setMinutes(localDate.getMinutes() - localDate.getTimezoneOffset());
+            document.getElementById('eventDate').value = localDate.toISOString().slice(0, 16);
+            
+            document.getElementById('eventModal').classList.remove('hidden');
+        }
+
+        function openEditModal(eventId) {
+            const event = appState.events.find(e => e.id === eventId);
+            if (!event) return;
+            
+            document.getElementById('eventId').value = event.id;
+            document.getElementById('eventType').value = event.type;
+            document.getElementById('eventDate').value = event.date.slice(0, 16);
+            document.getElementById('eventDuration').value = event.duration;
+            document.getElementById('eventDescription').value = event.description || '';
+            document.getElementById('eventCompleted').checked = event.completed;
+            
+            if (event.type === 'outro') {
+                document.getElementById('customTypeContainer').classList.remove('hidden');
+                document.getElementById('customType').value = event.customType || '';
+            }
+            
+            document.getElementById('modalTitle').textContent = 'Editar Momento';
+            document.getElementById('deleteBtn').classList.remove('hidden');
+            document.getElementById('completeBtn').classList.toggle('hidden', event.completed);
+            
+            document.getElementById('eventModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('eventModal').classList.add('hidden');
+        }
+
+        function saveEvent(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('eventId').value;
+            const type = document.getElementById('eventType').value;
+            const isNew = !id;
+            
+            const eventData = {
+                id: id || generateId(),
+                type: type,
+                date: document.getElementById('eventDate').value,
+                duration: parseInt(document.getElementById('eventDuration').value) || 60,
+                description: document.getElementById('eventDescription').value,
+                completed: document.getElementById('eventCompleted').checked,
+                customType: type === 'outro' ? document.getElementById('customType').value : null,
+                createdAt: isNew ? new Date().toISOString() : (appState.events.find(e => e.id === id)?.createdAt || new Date().toISOString()),
+                updatedAt: new Date().toISOString()
+            };
+            
+            if (isNew) {
+                appState.events.push(eventData);
+            } else {
+                const index = appState.events.findIndex(e => e.id === id);
+                if (index !== -1) appState.events[index] = eventData;
+            }
+            
+            saveData();
+            closeModal();
+            
+            if (appState.calendar) appState.calendar.refetchEvents();
+            
+            // Tentar sync com Google se autorizado
+            if (appState.googleAuthorized) {
+                syncEventToGoogle(eventData);
+            }
+            
+            showNotification(isNew ? 'Momento adicionado com sucesso! 💕' : 'Momento atualizado! 💕');
+        }
+
+        function deleteCurrentEvent() {
+            const id = document.getElementById('eventId').value;
+            if (!id) return;
+            
+            if (confirm('Tem a certeza que deseja eliminar este momento?')) {
+                appState.events = appState.events.filter(e => e.id !== id);
+                saveData();
+                closeModal();
+                if (appState.calendar) appState.calendar.refetchEvents();
+                
+                if (appState.googleAuthorized) {
+                    deleteFromGoogle(id);
+                }
+            }
+        }
+
+        function markAsCompleted() {
+            document.getElementById('eventCompleted').checked = true;
+            saveEvent({ preventDefault: () => {} });
+            showNotification('Parabéns! Mais um momento especial juntos! 💕✨');
+        }
+
+        // ==========================================
+        // HISTÓRICO E FILTROS
+        // ==========================================
+
+        function renderHistory() {
+            const filterType = document.getElementById('filterType').value;
+            const filterStatus = document.getElementById('filterStatus').value;
+            const filterDate = document.getElementById('filterDate').value;
+            
+            let filtered = [...appState.events].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            if (filterType) filtered = filtered.filter(e => e.type === filterType);
+            if (filterStatus) filtered = filtered.filter(e => filterStatus === 'completed' ? e.completed : !e.completed);
+            if (filterDate) filtered = filtered.filter(e => e.date.startsWith(filterDate));
+            
+            const container = document.getElementById('historyList');
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-gray-500">
+                        <p class="text-4xl mb-2">📝</p>
+                        <p>Nenhum momento encontrado</p>
+                        <p class="text-sm mt-2">Clique em "Adicionar Momento Especial" para começar</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = filtered.map(evt => {
+                const typeInfo = CONFIG.ACTIVITY_TYPES[evt.type];
+                const date = new Date(evt.date);
+                const dateStr = date.toLocaleDateString('pt-PT', { 
+                    weekday: 'short', 
+                    day: 'numeric', 
+                    month: 'short',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                return `
+                    <div class="bg-white rounded-xl p-4 shadow-sm border-l-4 ${evt.completed ? 'border-green-400' : 'border-pink-400'} hover:shadow-md transition cursor-pointer" onclick="openEditModal('${evt.id}')">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-xl">${typeInfo.icon}</span>
+                                    <span class="font-semibold text-gray-800">${evt.customType || typeInfo.label}</span>
+                                    ${evt.completed ? '<span class="text-green-500 text-xs">✓ Concluído</span>' : '<span class="text-pink-500 text-xs">○ Pendente</span>'}
+                                </div>
+                                <p class="text-sm text-gray-600">${dateStr} • ${evt.duration} min</p>
+                                ${evt.description ? `<p class="text-sm text-gray-500 mt-2 italic line-clamp-2">${evt.description}</p>` : ''}
+                            </div>
+                            <div class="w-3 h-3 rounded-full" style="background-color: ${typeInfo.color}"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function clearFilters() {
+            document.getElementById('filterType').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterDate').value = '';
+            renderHistory();
+        }
+
+        // ==========================================
+        // ESTATÍSTICAS E GRÁFICOS
+        // ==========================================
+
+        function renderStats() {
+            const events = appState.events;
+            const now = new Date();
+            const thisMonth = now.getMonth();
+            const thisYear = now.getFullYear();
+            
+            // Calcular estatísticas
+            const total = events.length;
+            const completed = events.filter(e => e.completed).length;
+            const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
+            const thisMonthEvents = events.filter(e => {
+                const d = new Date(e.date);
+                return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
+            }).length;
+            const totalMinutes = events.filter(e => e.completed).reduce((sum, e) => sum + (e.duration || 0), 0);
+            const totalHours = Math.round(totalMinutes / 60 * 10) / 10;
+            
+            // Atualizar cards
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statCompleted').textContent = completionRate + '%';
+            document.getElementById('statThisMonth').textContent = thisMonthEvents;
+            document.getElementById('statTime').textContent = totalHours + 'h';
+            
+            // Dados para gráficos
+            const typeCounts = {};
+            Object.keys(CONFIG.ACTIVITY_TYPES).forEach(type => typeCounts[type] = 0);
+            events.forEach(e => typeCounts[e.type] = (typeCounts[e.type] || 0) + 1);
+            
+            const monthlyData = {};
+            events.forEach(e => {
+                const d = new Date(e.date);
+                const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                monthlyData[key] = (monthlyData[key] || 0) + 1;
+            });
+            
+            // Ordenar meses
+            const sortedMonths = Object.keys(monthlyData).sort().slice(-6);
+            const monthlyCounts = sortedMonths.map(m => monthlyData[m]);
+            
+            // Destruir gráficos anteriores
+            if (appState.charts.pie) appState.charts.pie.destroy();
+            if (appState.charts.bar) appState.charts.bar.destroy();
+            
+            // Gráfico de Pizza (Tipos)
+            const pieCtx = document.getElementById('pieChart').getContext('2d');
+            appState.charts.pie = new Chart(pieCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(typeCounts).map(t => CONFIG.ACTIVITY_TYPES[t].label),
+                    datasets: [{
+                        data: Object.values(typeCounts),
+                        backgroundColor: Object.keys(typeCounts).map(t => CONFIG.ACTIVITY_TYPES[t].color),
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                    }
+                }
+            });
+            
+            // Gráfico de Barras (Mensal)
+            const barCtx = document.getElementById('barChart').getContext('2d');
+            appState.charts.bar = new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: sortedMonths.map(m => {
+                        const [year, month] = m.split('-');
+                        return `${month}/${year}`;
+                    }),
+                    datasets: [{
+                        label: 'Atividades',
+                        data: monthlyCounts,
+                        backgroundColor: '#e8b4b8',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                    }
+                }
+            });
+        }
+
+        function exportStats(format) {
+            const events = appState.events;
+            const csvContent = [
+                ['ID', 'Tipo', 'Data', 'Duração (min)', 'Descrição', 'Concluído', 'Criado em'].join(','),
+                ...events.map(e => [
+                    e.id,
+                    e.customType || CONFIG.ACTIVITY_TYPES[e.type].label,
+                    e.date,
+                    e.duration,
+                    `"${(e.description || '').replace(/"/g, '""')}"`,
+                    e.completed ? 'Sim' : 'Não',
+                    e.createdAt
+                ].join(','))
+            ].join('\n');
+            
+            if (format === 'csv') {
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `sara_filipe_momentos_${new Date().toISOString().split('T')[0]}.csv`;
+                link.click();
+            } else {
+                // Simulação de PDF (em produção usar jsPDF)
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html>
+                    <head><title>Sara & Filipe - Relatório</title></head>
+                    <body style="font-family: Arial; padding: 40px;">
+                        <h1 style="color: #e8b4b8;">💕 Sara & Filipe - Relatório de Momentos</h1>
+                        <p>Gerado em: ${new Date().toLocaleString('pt-PT')}</p>
+                        <hr>
+                        <pre style="white-space: pre-wrap;">${csvContent.replace(/,/g, ' | ')}</pre>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+                printWindow.print();
+            }
+        }
+
+        // ==========================================
+        // BACKUP E RESTORE
+        // ==========================================
+
+        function exportBackup() {
+            const backup = {
+                version: 1,
+                exportedAt: new Date().toISOString(),
+                events: appState.events
+            };
+            
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `sara_filipe_backup_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            showNotification('Backup exportado com sucesso! 💾');
+        }
+
+        function importBackup(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const backup = JSON.parse(e.target.result);
+                    
+                    if (!confirm(`Restaurar backup de ${new Date(backup.exportedAt).toLocaleString('pt-PT')}?\n\n${backup.events?.length || 0} eventos encontrados.\n\n⚠️ Isso substituirá todos os dados atuais.`)) {
+                        return;
+                    }
+                    
+                    appState.events = backup.events || [];
+                    saveData();
+                    
+                    if (appState.calendar) appState.calendar.refetchEvents();
+                    showNotification(`Backup restaurado! ${appState.events.length} eventos recuperados 💕`);
+                } catch (err) {
+                    alert('Erro ao importar backup: arquivo inválido');
+                    console.error(err);
+                }
+            };
+            reader.readAsText(file);
+            input.value = ''; // Reset input
+        }
+
+        // ==========================================
+        // GOOGLE CALENDAR API INTEGRATION
+        // ==========================================
+
+        function saveGoogleConfig() {
+            const config = {
+                clientId: document.getElementById('clientIdInput').value.trim(),
+                apiKey: document.getElementById('apiKeyInput').value.trim()
+            };
+            localStorage.setItem(CONFIG.GOOGLE_CONFIG_KEY, JSON.stringify(config));
+            alert('Configuração Google guardada! A página será recarregada para aplicar.');
+            location.reload();
+        }
+
+        function initGoogleAPI() {
+            const config = localStorage.getItem(CONFIG.GOOGLE_CONFIG_KEY);
+            if (!config) return;
+            
+            const { clientId, apiKey } = JSON.parse(config);
+            if (!clientId || !apiKey) return;
+            
+            // Mostrar banner
+            document.getElementById('googleAuthBanner').classList.remove('hidden');
+            
+            // Carregar GAPI
+            gapi.load('client', async () => {
+                try {
+                    await gapi.client.init({
+                        apiKey: apiKey,
+                        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest']
+                    });
+                    gapiInited = true;
+                    maybeEnableButtons();
+                } catch (err) {
+                    console.error('Erro ao inicializar GAPI:', err);
+                }
+            });
+            
+            // Inicializar GIS
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: clientId,
+                scope: 'https://www.googleapis.com/auth/calendar.events',
+                callback: (tokenResponse) => {
+                    if (tokenResponse.error) {
+                        console.error(tokenResponse);
+                        return;
+                    }
+                    appState.googleAuthorized = true;
+                    updateGoogleUI();
+                    showNotification('Conectado ao Google Calendar! ☁️');
+                    syncFromGoogle();
+                }
+            });
+            gisInited = true;
+            maybeEnableButtons();
+        }
+
+        function maybeEnableButtons() {
+            if (gapiInited && gisInited) {
+                document.getElementById('authorizeBtn').disabled = false;
+            }
+        }
+
+        function handleAuthClick() {
+            if (!gapiInited || !gisInited) {
+                alert('Por favor configure o Client ID e API Key primeiro nas Configurações');
+                return;
+            }
+            tokenClient.requestAccessToken({ prompt: 'consent' });
+        }
+
+        function handleSignoutClick() {
+            const token = gapi.client.getToken();
+            if (token) {
+                google.accounts.oauth2.revoke(token.access_token);
+                gapi.client.setToken('');
+                appState.googleAuthorized = false;
+                updateGoogleUI();
+                showNotification('Desconectado do Google Calendar');
+            }
+        }
+
+        function updateGoogleUI() {
+            const authorized = appState.googleAuthorized;
+            document.getElementById('authorizeBtn').classList.toggle('hidden', authorized);
+            document.getElementById('signoutBtn').classList.toggle('hidden', !authorized);
+            document.getElementById('googleStatus').textContent = authorized ? 
+                'Conectado como pimpaofs@gmail.com' : 'Não conectado';
+        }
+
+        async function syncToGoogle() {
+            if (!appState.googleAuthorized) {
+                alert('Por favor conecte-se ao Google primeiro');
+                return;
+            }
+            
+            showNotification('A sincronizar com Google Calendar...');
+            
+            for (const event of appState.events) {
+                try {
+                    await syncEventToGoogle(event);
+                } catch (err) {
+                    console.error('Erro ao sincronizar evento:', err);
+                }
+            }
+            
+            showNotification('Sincronização concluída! ☁️✅');
+        }
+
+        async function syncEventToGoogle(event) {
+            if (!appState.googleAuthorized) return;
+            
+            const typeInfo = CONFIG.ACTIVITY_TYPES[event.type];
+            const summary = `${typeInfo.icon} ${event.customType || typeInfo.label}`;
+            const description = `[ID: ${event.id}]\n\n${event.description || ''}\n\nStatus: ${event.completed ? 'Concluído' : 'Pendente'}`;
+            
+            const startDate = new Date(event.date);
+            const endDate = new Date(startDate.getTime() + event.duration * 60000);
+            
+            const eventData = {
+                summary: summary,
+                description: description,
+                start: {
+                    dateTime: startDate.toISOString(),
+                    timeZone: 'Europe/Lisbon'
+                },
+                end: {
+                    dateTime: endDate.toISOString(),
+                    timeZone: 'Europe/Lisbon'
+                },
+                colorId: getGoogleColorId(event.type),
+                visibility: 'private'
+            };
+            
+            // Verificar se evento já existe no Google
+            try {
+                const response = await gapi.client.calendar.events.list({
+                    calendarId: 'primary',
+                    q: `[ID: ${event.id}]`,
+                    maxResults: 1
+                });
+                
+                if (response.result.items.length > 0) {
+                    // Atualizar existente
+                    const googleEventId = response.result.items[0].id;
+                    await gapi.client.calendar.events.patch({
+                        calendarId: 'primary',
+                        eventId: googleEventId,
+                        resource: eventData
+                    });
+                } else {
+                    // Criar novo
+                    await gapi.client.calendar.events.insert({
+                        calendarId: 'primary',
+                        resource: eventData
+                    });
+                }
+            } catch (err) {
+                console.error('Erro Google Calendar:', err);
+                throw err;
+            }
+        }
+
+        async function deleteFromGoogle(eventId) {
+            if (!appState.googleAuthorized) return;
+            
+            try {
+                const response = await gapi.client.calendar.events.list({
+                    calendarId: 'primary',
+                    q: `[ID: ${eventId}]`,
+                    maxResults: 1
+                });
+                
+                if (response.result.items.length > 0) {
+                    await gapi.client.calendar.events.delete({
+                        calendarId: 'primary',
+                        eventId: response.result.items[0].id
+                    });
+                }
+            } catch (err) {
+                console.error('Erro ao eliminar do Google:', err);
+            }
+        }
+
+        async function syncFromGoogle() {
+            if (!appState.googleAuthorized) return;
+            
+            try {
+                const response = await gapi.client.calendar.events.list({
+                    calendarId: 'primary',
+                    timeMin: (new Date(Date.now() - 365 * 24 * 60 * 60 * 1000)).toISOString(),
+                    maxResults: 250,
+                    orderBy: 'startTime',
+                    singleEvents: true
+                });
+                
+                const googleEvents = response.result.items;
+                let imported = 0;
+                
+                for (const gEvent of googleEvents) {
+                    // Procurar ID nosso na descrição
+                    const idMatch = gEvent.description?.match(/\[ID: ([^\]]+)\]/);
+                    if (!idMatch) continue; // Não é nosso evento
+                    
+                    const ourId = idMatch[1];
+                    const exists = appState.events.find(e => e.id === ourId);
+                    
+                    if (!exists) {
+                        // Importar novo evento
+                        const typeMatch = Object.keys(CONFIG.ACTIVITY_TYPES).find(t => 
+                            gEvent.summary?.includes(CONFIG.ACTIVITY_TYPES[t].icon)
+                        ) || 'outro';
+                        
+                        const startTime = new Date(gEvent.start.dateTime || gEvent.start.date);
+                        const endTime = new Date(gEvent.end.dateTime || gEvent.end.date);
+                        const duration = Math.round((endTime - startTime) / 60000);
+                        
+                        appState.events.push({
+                            id: ourId,
+                            type: typeMatch,
+                            date: startTime.toISOString(),
+                            duration: duration || 60,
+                            description: gEvent.description?.replace(/\[ID: [^\]]+\]\n\n/, '') || '',
+                            completed: gEvent.description?.includes('Status: Concluído') || false,
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString()
+                        });
+                        imported++;
+                    }
+                }
+                
+                if (imported > 0) {
+                    saveData();
+                    if (appState.calendar) appState.calendar.refetchEvents();
+                    showNotification(`${imported} eventos importados do Google Calendar!`);
+                }
+            } catch (err) {
+                console.error('Erro ao importar:', err);
+            }
+        }
+
+        function getGoogleColorId(type) {
+            // Mapear tipos para cores do Google Calendar
+            const colorMap = {
+                'intimo': '11',    // Vermelho
+                'encontro': '5',   // Amarelo
+                'qualidade': '10', // Verde
+                'exercicio': '7',  // Azul claro
+                'massagem': '2',   // Verde claro
+                'conversa': '1',   // Lavanda
+                'jogo': '6',       // Laranja
+                'outro': '8'       // Cinza
+            };
+            return colorMap[type] || '8';
+        }
+
+        // ==========================================
+        // CONFIGURAÇÕES ADICIONAIS
+        // ==========================================
+
+        function toggleNotifications() {
+            const enabled = document.getElementById('notificationsEnabled').checked;
+            
+            if (enabled && 'Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        showNotification('Notificações ativadas! 💕');
+                        scheduleReminders();
+                    } else {
+                        document.getElementById('notificationsEnabled').checked = false;
+                        alert('Permissão de notificações negada');
+                    }
+                });
+            }
+        }
+
+        function scheduleReminders() {
+            // Verificar eventos pendentes a cada hora
+            setInterval(() => {
+                const now = new Date();
+                const upcoming = appState.events.filter(e => {
+                    if (e.completed) return false;
+                    const eventDate = new Date(e.date);
+                    const diff = eventDate - now;
+                    return diff > 0 && diff < 24 * 60 * 60 * 1000; // Próximas 24h
+                });
+                
+                upcoming.forEach(event => {
+                    const typeInfo = CONFIG.ACTIVITY_TYPES[event.type];
+                    new Notification('💕 Sara & Filipe', {
+                        body: `Lembrete: ${typeInfo.label} hoje às ${new Date(event.date).toLocaleTimeString('pt-PT', {hour: '2-digit', minute: '2-digit'})}`,
+                        icon: '💕'
+                    });
+                });
+            }, 60 * 60 * 1000); // A cada hora
+        }
+
+        function showNotification(message) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('Sara & Filipe', { body: message, icon: '💕' });
+            }
+            
+            // Toast visual
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 right-4 bg-pink-500 text-white px-6 py-3 rounded-xl shadow-lg z-[200] fade-in';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function clearAllData() {
+            if (confirm('⚠️ ATENÇÃO: Isto irá apagar TODOS os dados locais. Esta ação não pode ser desfeita. Deseja continuar?')) {
+                if (confirm('Tem mesmo a certeza? Todos os momentos registados serão perdidos permanentemente.')) {
+                    localStorage.removeItem(CONFIG.STORAGE_KEY);
+                    appState.events = [];
+                    if (appState.calendar) appState.calendar.refetchEvents();
+                    showNotification('Todos os dados foram apagados');
+                    renderHistory();
+                    renderStats();
+                }
+            }
+        }
+
+        // Fechar modal ao clicar fora
+        document.getElementById('eventModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeModal();
+        });
+    </script>
+</body>
+</html>
